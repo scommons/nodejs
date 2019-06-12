@@ -7,11 +7,5 @@ import scala.scalajs.js.annotation.JSGlobal
 @JSGlobal("global")
 object NodeJs extends js.Object {
   
-  val process: NodeProcess = js.native
-}
-
-@js.native
-trait NodeProcess extends js.Object {
-  
-  def exit(code: Int): Unit = js.native
+  val process: Process = js.native
 }

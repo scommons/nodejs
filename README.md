@@ -26,6 +26,14 @@ the proper dependency resolver to your `build.sbt` settings:
 resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 ```
 
+### How to use it
+
+* [Process](core/src/main/scala/scommons/nodejs/raw/Process.scala) => [tests](showcase/src/test/scala/scommons/nodejs/ProcessSpec.scala)
+* [FS](core/src/main/scala/scommons/nodejs/FS.scala) => [tests](showcase/src/test/scala/scommons/nodejs/FSSpec.scala)
+* [OS](core/src/main/scala/scommons/nodejs/raw/OS.scala) => [tests](showcase/src/test/scala/scommons/nodejs/OSSpec.scala)
+* [Path](core/src/main/scala/scommons/nodejs/raw/Path.scala) => [tests](showcase/src/test/scala/scommons/nodejs/PathSpec.scala)
+* [URL](core/src/main/scala/scommons/nodejs/raw/URL.scala) => [tests](showcase/src/test/scala/scommons/nodejs/URLSpec.scala)
+
 ### How to Build
 
 To build and run all the tests use the following command:
