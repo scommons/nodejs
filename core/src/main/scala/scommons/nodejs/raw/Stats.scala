@@ -3,6 +3,9 @@ package scommons.nodejs.raw
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 
+/**
+  * https://nodejs.org/docs/latest-v9.x/api/fs.html#fs_class_fs_stats
+  */
 @js.native
 @JSImport("fs", "Stats")
 abstract class Stats extends js.Object {
@@ -11,6 +14,7 @@ abstract class Stats extends js.Object {
   def isFile(): Boolean = js.native
   def isSymbolicLink(): Boolean = js.native
 
+  val mode: Int = js.native
   val size: Double = js.native //The size of the file in bytes.
 
   val atimeMs: Double = js.native //the last time file data was accessed, in milliseconds

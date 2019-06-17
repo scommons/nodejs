@@ -30,6 +30,8 @@ resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositor
 
 * [Process](core/src/main/scala/scommons/nodejs/raw/Process.scala) => [tests](showcase/src/test/scala/scommons/nodejs/ProcessSpec.scala)
 * [FS](core/src/main/scala/scommons/nodejs/FS.scala) => [tests](showcase/src/test/scala/scommons/nodejs/FSSpec.scala)
+  * [Stats](core/src/main/scala/scommons/nodejs/raw/Stats.scala) => [tests](showcase/src/test/scala/scommons/nodejs/StatsSpec.scala)
+  * [Constants](core/src/main/scala/scommons/nodejs/raw/FSConstants.scala) => [tests](showcase/src/test/scala/scommons/nodejs/StatsSpec.scala)
 * [OS](core/src/main/scala/scommons/nodejs/raw/OS.scala) => [tests](showcase/src/test/scala/scommons/nodejs/OSSpec.scala)
 * [Path](core/src/main/scala/scommons/nodejs/raw/Path.scala) => [tests](showcase/src/test/scala/scommons/nodejs/PathSpec.scala)
 * [URL](core/src/main/scala/scommons/nodejs/raw/URL.scala) => [tests](showcase/src/test/scala/scommons/nodejs/URLSpec.scala)
