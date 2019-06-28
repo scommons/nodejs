@@ -8,6 +8,8 @@ import scala.scalajs.js
 @js.native
 trait Process extends js.Object {
 
+  val stdin: EventEmitter = js.native
+  
   def chdir(directory: String): Unit = js.native
   
   def cwd(): String = js.native

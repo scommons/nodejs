@@ -29,6 +29,7 @@ resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositor
 ### How to use it
 
 * [Process](core/src/main/scala/scommons/nodejs/raw/Process.scala) => [tests](showcase/src/test/scala/scommons/nodejs/ProcessSpec.scala)
+* [EventEmitter](core/src/main/scala/scommons/nodejs/raw/EventEmitter.scala) => [tests](showcase/src/test/scala/scommons/nodejs/EventEmitterSpec.scala)
 * [FS](core/src/main/scala/scommons/nodejs/FS.scala) => [tests](showcase/src/test/scala/scommons/nodejs/FSSpec.scala)
   * [Stats](core/src/main/scala/scommons/nodejs/raw/Stats.scala) => [tests](showcase/src/test/scala/scommons/nodejs/StatsSpec.scala)
   * [Constants](core/src/main/scala/scommons/nodejs/raw/FSConstants.scala) => [tests](showcase/src/test/scala/scommons/nodejs/StatsSpec.scala)

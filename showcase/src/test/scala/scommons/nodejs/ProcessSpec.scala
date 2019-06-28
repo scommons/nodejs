@@ -2,6 +2,8 @@ package scommons.nodejs
 
 import scommons.nodejs.test.TestSpec
 
+import scala.scalajs.js
+
 class ProcessSpec extends TestSpec {
 
   it should "return current working directory" in {
@@ -22,5 +24,19 @@ class ProcessSpec extends TestSpec {
     
     //cleanup
     process.chdir(currDir)
+  }
+  
+  it should "return eventEmitter interface when stdin" in {
+    //when
+    val eventEmitter = process.stdin
+    
+    //then
+    var expectedKey: js.Dynamic = null
+    eventEmitter.once("keypress", { (_, key) =>
+      expectedKey = key
+    }: js.Function2[js.Object, js.Dynamic, Unit])
+    
+    eventEmitter.emit("keypress", js.undefined, js.Dynamic.literal(name = "a"))
+    expectedKey.name shouldBe "a"
   }
 }
