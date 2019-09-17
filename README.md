@@ -36,6 +36,7 @@ resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositor
 * [OS](core/src/main/scala/scommons/nodejs/raw/OS.scala) => [tests](showcase/src/test/scala/scommons/nodejs/OSSpec.scala)
 * [Path](core/src/main/scala/scommons/nodejs/raw/Path.scala) => [tests](showcase/src/test/scala/scommons/nodejs/PathSpec.scala)
 * [URL](core/src/main/scala/scommons/nodejs/raw/URL.scala) => [tests](showcase/src/test/scala/scommons/nodejs/URLSpec.scala)
+* [Timers](core/src/main/scala/scommons/nodejs/raw/Timers.scala) => [tests](test/src/test/scala/scommons/nodejs/test/AsyncTestSpecTest.scala)
 
 ### How to Build
 
