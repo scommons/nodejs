@@ -1,5 +1,7 @@
 package scommons.nodejs
 
+import scommons.nodejs.raw._
+
 import scala.concurrent.{Future, Promise}
 import scala.scalajs.js
 
@@ -15,6 +17,27 @@ sealed trait FS {
   }
 
   def lstatSync(path: String): Stats = raw.FS.lstatSync(path)
+
+  def existsSync(path: String): Boolean = raw.FS.existsSync(path)
+  
+  def unlinkSync(path: String): Unit = raw.FS.unlinkSync(path)
+  
+  def rmdirSync(path: String): Unit = raw.FS.rmdirSync(path)
+  
+  def mkdtempSync(prefix: String): String = raw.FS.mkdtempSync(prefix)
+
+  def writeFileSync(file: String,
+                    data: String,
+                    options: js.UndefOr[WriteFileOptions] = js.undefined): Unit = {
+
+    raw.FS.writeFileSync(file, data, options)
+  }
+  
+  def createWriteStream(path: String,
+                        options: js.UndefOr[CreateWriteStreamOptions] = js.undefined): WriteStream = {
+    
+    raw.FS.createWriteStream(path, options)
+  }
 }
 
 object FS extends FS

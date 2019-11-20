@@ -4,8 +4,13 @@ import scommons.nodejs.test.TestSpec
 
 class OSSpec extends TestSpec {
 
-  it should "return user home dir when homedir()" in {
+  it should "return home dir when homedir" in {
     //when & then
     os.homedir() should not be empty
+  }
+  
+  it should "return tmp dir when tmpdir" in {
+    //when & then
+    os.tmpdir() should not be empty
   }
 }

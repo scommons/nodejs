@@ -14,4 +14,6 @@ object OS extends OS
 trait OS extends js.Object {
 
   def homedir(): String = js.native
+  
+  def tmpdir(): String = js.native
 }
