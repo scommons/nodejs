@@ -24,6 +24,10 @@ sealed trait FS {
   
   def rmdirSync(path: String): Unit = raw.FS.rmdirSync(path)
   
+  def mkdirSync(path: String, mode: js.UndefOr[Int] = js.undefined): Unit = {
+    raw.FS.mkdirSync(path, mode)
+  }
+  
   def mkdtempSync(prefix: String): String = raw.FS.mkdtempSync(prefix)
 
   def writeFileSync(file: String,

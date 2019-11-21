@@ -21,6 +21,8 @@ object FS extends js.Object {
   
   def rmdirSync(path: String | URL): Unit = js.native
   
+  def mkdirSync(path: String | URL, mode: js.UndefOr[Int]): String = js.native
+  
   def mkdtempSync(prefix: String): String = js.native
 
   def writeFileSync(file: String | URL,

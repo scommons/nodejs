@@ -86,16 +86,22 @@ class FSSpec extends AsyncTestSpec {
     val tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "scommons-nodejs-"))
     fs.existsSync(tmpDir) shouldBe true
     
-    val tmpFile = path.join(tmpDir, "example.txt")
-    fs.writeFileSync(tmpFile, "hello, World!!!")
-    fs.existsSync(tmpFile) shouldBe true
+    val dir = path.join(tmpDir, "test")
+    fs.mkdirSync(dir)
+    fs.existsSync(dir) shouldBe true
+    
+    val file = path.join(tmpDir, "example.txt")
+    fs.writeFileSync(file, "hello, World!!!")
+    fs.existsSync(file) shouldBe true
 
     //when
-    fs.unlinkSync(tmpFile)
+    fs.rmdirSync(dir)
+    fs.unlinkSync(file)
     fs.rmdirSync(tmpDir)
 
     //then
-    fs.existsSync(tmpFile) shouldBe false
+    fs.existsSync(dir) shouldBe false
+    fs.existsSync(file) shouldBe false
     fs.existsSync(tmpDir) shouldBe false
   }
 }
