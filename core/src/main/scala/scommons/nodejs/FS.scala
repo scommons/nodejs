@@ -5,7 +5,7 @@ import scommons.nodejs.raw._
 import scala.concurrent.{Future, Promise}
 import scala.scalajs.js
 
-sealed trait FS {
+trait FS {
 
   def readdir(path: String): Future[Seq[String]] = {
     val p = Promise[Seq[String]]()
