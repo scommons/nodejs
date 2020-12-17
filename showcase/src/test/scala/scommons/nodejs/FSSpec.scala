@@ -39,7 +39,6 @@ class FSSpec extends AsyncTestSpec {
 
     val mode = stats.mode
     (mode & S_IFDIR) should not be 0
-    (mode & S_IRUSR) should not be 0
     
     stats.size should be > 0.0
     
