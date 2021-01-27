@@ -17,7 +17,7 @@ trait Process {
   def exit(code: Int): Unit = native.exit(code)
 }
 
-object Process extends Process {
+object Process {
 
   trait Platform extends js.Object
 

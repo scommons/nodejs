@@ -8,9 +8,10 @@ package object nodejs {
   type Timeout = raw.Timeout
 
   lazy val path: raw.Path = raw.Path
-  lazy val fs: FS = FS
+  lazy val fs: FS = new FS {}
   lazy val os: raw.OS = raw.OS
-  lazy val process: Process = Process
+  lazy val process: Process = new Process {}
+  lazy val child_process: ChildProcess = new ChildProcess {}
   
   lazy val global: raw.NodeJs = raw.NodeJs
 }

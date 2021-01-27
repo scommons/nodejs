@@ -43,5 +43,3 @@ trait FS {
     raw.FS.createWriteStream(path, options)
   }
 }
-
-object FS extends FS
