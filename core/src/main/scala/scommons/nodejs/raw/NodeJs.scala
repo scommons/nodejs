@@ -12,3 +12,11 @@ object NodeJs extends NodeJs {
   
   val process: Process = js.native
 }
+
+@js.native
+@JSGlobal
+class Error extends js.Error {
+
+  val code: String = js.native
+  val stack: String = js.native
+}

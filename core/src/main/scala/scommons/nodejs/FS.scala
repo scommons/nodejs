@@ -4,6 +4,7 @@ import scommons.nodejs.raw._
 
 import scala.concurrent.{Future, Promise}
 import scala.scalajs.js
+import scala.scalajs.js.typedarray.Uint8Array
 
 trait FS {
 
@@ -16,6 +17,10 @@ trait FS {
     p.future
   }
 
+  def openSync(path: String, flags: Int): Int = raw.FS.openSync(path, flags)
+  
+  def closeSync(fd: Int): Unit = raw.FS.closeSync(fd)
+  
   def lstatSync(path: String): Stats = raw.FS.lstatSync(path)
 
   def existsSync(path: String): Boolean = raw.FS.existsSync(path)
@@ -30,9 +35,45 @@ trait FS {
   
   def mkdtempSync(prefix: String): String = raw.FS.mkdtempSync(prefix)
 
+  def futimesSync(fd: Int, atimeSec: Double, mtimeSec: Double): Unit = {
+    raw.FS.futimesSync(fd, atimeSec, mtimeSec)
+  }
+
+  def read(fd: Int,
+           buffer: Uint8Array,
+           offset: Int,
+           length: Int,
+           position: js.UndefOr[Double] = js.undefined): Future[Int] = {
+    
+    val p = Promise[Int]()
+    raw.FS.read(fd, buffer, offset, length, position, { (error, bytesRead, _) =>
+      if (error != null && !js.isUndefined(error)) p.failure(js.JavaScriptException(error))
+      else p.success(bytesRead)
+    })
+    p.future
+  }
+
+  def write(fd: Int,
+            buffer: Uint8Array,
+            offset: Int,
+            length: Int,
+            position: js.UndefOr[Double] = js.undefined): Future[Int] = {
+    
+    val p = Promise[Int]()
+    raw.FS.write(fd, buffer, offset, length, position, { (error, bytesWritten, _) =>
+      if (error != null && !js.isUndefined(error)) p.failure(js.JavaScriptException(error))
+      else p.success(bytesWritten)
+    })
+    p.future
+  }
+
+  def readFileSync(file: String, options: js.UndefOr[FileOptions] = js.undefined): String = {
+    raw.FS.readFileSync(file, options)
+  }
+  
   def writeFileSync(file: String,
                     data: String,
-                    options: js.UndefOr[WriteFileOptions] = js.undefined): Unit = {
+                    options: js.UndefOr[FileOptions] = js.undefined): Unit = {
 
     raw.FS.writeFileSync(file, data, options)
   }
