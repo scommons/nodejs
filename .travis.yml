@@ -5,37 +5,38 @@ jdk:
 dist: trusty
 env:
   global:
-  - TRAVIS_NODE_VERSION="9"
   - TRAVIS_SBT_VERSION="1.2.8"
   - secure: b/EZ9fktxt/toqaYPv3MGULqbygnZrrfOXnbbXvmTVYhq+wczqwAls7NHFeAjy8WhETSVynJymZnk5FDgskpJDRxD/WWkM3xyKpSOfmuPMN94P0Ij35Bm9q5ethzQfd2GB0Mc8nVq04xtumB9L/3O/8gh8dY7hyqAISi6pReRpdolf+LDMuJ/VUMm5phfPBbywU6lKjDS+/woad6fT93D8bmaL002aZ848rMwBCC9eyOWLs7G/0AmresGekKFsN7AZ2NzgaeyvocvKBV4wtgAZy9vhFQ2udpfq7jkQZq7HLxZxEgr+8GlOGrdbzG/T9E6G1tVUBmq7Dr/FNupBMvMBbfNfaKnMcHEk+IeQaHwnxgTU528we4IAfvrm3QqkiVRFvTULB9E8ZOX9+g3E4VW3PSgmZXNYL+YPnGI9XVO2KIyw0g9bxOwanF7jflwLg0SxXq+cxwatGiYELKjtsJEqLiMGZrXFdAdx1tpO3LQdUq+5J0rniUYV1Lt7n9rJamWL90AYSX40BbPrAkCYentH4aS2wggEOii4VjRg3dym0n7SnrQKk6u/jxU4s0wXyouwX8AB+D4x+Vk9mkXjtuykL+lN3MuB72HWYbd4CxVrV7PKpH+DwbvLvLffNB77f81yXUP6oxfVhaePikQPGIJwIWjF66f6kk6KPogx6NOJk=
   - secure: IdvQC1pJV8w/L7i8VQp/HGv1WvX8Di4RQGfPKftEjNWqPxSAFD2PMbtcv9Y/fBJ1eRBMGEZb5m2yx+P6s3lh6Lu4FtEoHC6ux4eS0ldSlO55jpuT+hu7WVoC86GilTydQ6vGIue0TG3YXoKqpBEZj64dHisGj1MzLqWBQmZj6TMd3BocqzdPkuUbjEniYegVWgZyOsqRHH0cpuaH343sTddqS+jmrCL7yjaWmg+Aa4vmLnpZyvrr0lXxZhyMl65KV9EbrqQtO2QPlv+R0+VhEkl2339dzXsiS3SGvVRZ5/oeSR84gQeS3X+jnMlwoZpexHs1nxfJXs792rcxRltRx3dbczcUz9Gj93jNMCPrVOaNLIbWYNmMfamux9xuw5FgPFh4QFsGvzReUtQZ4sqSNNo1xut2KpigCQFajkx35bc+MH6KtzS0r1h/eV9Sb7MvUUT2ftPs+JD3Juq4PCcUVpHaNZHPmLZrHaJaO/hE5G1q/xuOsAD+1Y0rJmP+5pWFIGvEPQ0GXHn3qG540WdsuZZT6ujBlUNYHqfTek6e7NM8ytw3d3DNorkY/zuIdmAuGQuS1gzd4lziRt13qeT2muUiCFKR/ODJIovIP4JVS7qtkb67/tzsze65JoH5LFfUFf2wXZXooUGkGmtgwo1iib7k/Oa7eV1ppkSONrG9v6o=
   - secure: ZA2RtWSs/o75O4aI7MO/MU47KltbV70UAGIyTO/EHSye8I51G0V3eXibJlQ6iRMp+NGYB9Yu1FcplJ6oc/Gw5k+8FdnHEHz9GAhH3vJeM3mB6o3TXOYrOt3HOwA4x5H1pd4MAwjKkNxk80H4UT9kiH6SxVsCSPmM4wzCSgMtSuICPP4bhIdyOS48KSBC86AlYldrD3ncb6tNSq2gsXaO1reFQ4YR8oUeg2iSz4emSaqbStnvf5tqokwXmgctFGwcQAOlvP6sUMIGMimiKWXtOXjVZvLrMVCPvU5uT8GuMnVvJhtwROGIMSpjJBydnEDz7XivZRXdPoWtdEyPLwL+5Ly4PyVHMw3jK4s7Ejy2sWiZoiYZtt/qfaJlX2S5frcl6hd82iqn7UAw1sPSrIo8llzbN1UeLk6ywHCBVBfDOPt76pODQHrsK0RRUaiYrStkaQ4HSw7csODRuEAqBAmMkFojo1IVCBpRCmSm+fwwcSD5uROSl5iwkBk+Y409aWUtziqhSNRxYZh6RdyiVff2mR9190e+YXI8BbIiS416rjS/UIvgSVE4nwiDIz+OZMzfPKm+lG10xeTxkdBjS1KzVsdA94gdJ+aMDuUOl0uKT1tNrV7JE6DLNHmttWpTEIYd7Y1bF4kuYBpxOaXKkKptt9OLFD0lRSBvn5EyhO2Nd44=
 before_install:
-#- nvm install 9
-#- nvm use 9
-- node --version
+- nvm install 12 &&
+  nvm use 12
+- node --version &&
+  npm --version
 - if [ $TRAVIS_PULL_REQUEST = 'false' ]; then
     openssl aes-256-cbc -K $encrypted_9f5ecf143eee_key -iv $encrypted_9f5ecf143eee_iv -in travis/secrets.tar.enc -out travis/secrets.tar -d;
     tar xv -C travis -f travis/secrets.tar;
   fi
 script:
 - sbt clean coverage test coverageReport &&
-  sbt coverageAggregate
-after_success:
-- sbt coveralls
-- if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" -o "$TRAVIS_BRANCH" == "$TRAVIS_TAG" ]; then
+  sbt coverageAggregate &&
+  sbt coveralls &&
+  if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" -o "$TRAVIS_BRANCH" == "$TRAVIS_TAG" ]; then
     if [ -z "$TRAVIS_TAG" ]; then
        echo "Publish a snapshot";
        sbt clean publish;
     else
        echo "Publish a release version=$TRAVIS_TAG";
-       version=$TRAVIS_TAG sbt clean publishSigned sonatypeRelease;
+       version=$TRAVIS_TAG sbt clean publishSigned sonatypeBundleRelease;
     fi
   else
     echo "This is not a master branch commit. Skipping the publish/release step";
   fi
 cache:
   directories:
+  - ~/.npm
+  - ~/.nvm
   - "$HOME/.ivy2/cache"
   - "$HOME/.sbt"
 before_cache:

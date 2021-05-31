@@ -2,6 +2,7 @@ package scommons.nodejs.test
 
 import org.scalactic.source.Position
 import org.scalatest._
+import org.scalatest.matchers.should.Matchers
 
 import scala.scalajs.js
 
