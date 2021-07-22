@@ -9,6 +9,7 @@ import scala.concurrent.Future
 import scala.scalajs.js
 import scala.scalajs.js.JavaScriptException
 import scala.scalajs.js.typedarray.Uint8Array
+import scala.Ordering.Double.IeeeOrdering
 
 class FSSpec extends AsyncTestSpec {
 

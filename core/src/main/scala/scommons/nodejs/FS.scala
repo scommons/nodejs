@@ -12,7 +12,7 @@ trait FS {
     val p = Promise[Seq[String]]()
     raw.FS.readdir(path, { (error, files) =>
       if (error != null && !js.isUndefined(error)) p.failure(js.JavaScriptException(error))
-      else p.success(files)
+      else p.success(files.toSeq)
     })
     p.future
   }

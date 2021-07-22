@@ -10,8 +10,10 @@ class BaseTestSpecTest extends TestSpec
 
   it should "fail if not an object when assertObject" in {
     //when
-    val Failed(e) = outcomeOf {
+    val e = inside(outcomeOf {
       assertObject(1.23, "1.23")
+    }) {
+      case Failed(e) => e
     }
     
     //then
@@ -24,11 +26,13 @@ class BaseTestSpecTest extends TestSpec
   
   it should "fail if keys doesn't match when assertObject" in {
     //when
-    val Failed(e) = outcomeOf {
+    val e = inside(outcomeOf {
       assertObject(
         literal(key1 = "1", key2 = "2"),
         literal(key1 = "1", key3 = "2")
       )
+    }) {
+      case Failed(e) => e
     }
     
     //then
@@ -41,11 +45,13 @@ class BaseTestSpecTest extends TestSpec
   
   it should "fail if nested object doesn't match when assertObject" in {
     //when
-    val Failed(e) = outcomeOf {
+    val e = inside(outcomeOf {
       assertObject(
         literal(key1 = "1", nestedObj = literal(key2 = "2")),
         literal(key1 = "1", nestedObj = literal(key2 = "3"))
       )
+    }) {
+      case Failed(e) => e
     }
     
     //then
@@ -58,11 +64,13 @@ class BaseTestSpecTest extends TestSpec
   
   it should "fail if not a nested array when assertObject" in {
     //when
-    val Failed(e) = outcomeOf {
+    val e = inside(outcomeOf {
       assertObject(
         literal(key1 = "1", nestedArr = "1,3"),
         literal(key1 = "1", nestedArr = js.Array("1", "3"))
       )
+    }) {
+      case Failed(e) => e
     }
     
     //then
@@ -75,11 +83,13 @@ class BaseTestSpecTest extends TestSpec
   
   it should "fail if nested array doesn't match when assertObject" in {
     //when
-    val Failed(e) = outcomeOf {
+    val e = inside(outcomeOf {
       assertObject(
         literal(key1 = "1", nestedArr = js.Array("1", "2")),
         literal(key1 = "1", nestedArr = js.Array("1", "3"))
       )
+    }) {
+      case Failed(e) => e
     }
     
     //then
