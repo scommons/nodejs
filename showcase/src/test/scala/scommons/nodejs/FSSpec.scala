@@ -34,6 +34,65 @@ class FSSpec extends AsyncTestSpec {
     }
   }
   
+  it should "fail if newPath is dir when rename" in {
+    //given
+    val tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "scommons-nodejs-"))
+    fs.existsSync(tmpDir) shouldBe true
+
+    val file = path.join(tmpDir, "example.txt")
+    fs.writeFileSync(file, "hello, World!!!")
+    fs.existsSync(file) shouldBe true
+
+    val oldPath = file
+    val newPath = os.homedir()
+
+    //when
+    val result = fs.rename(oldPath, newPath)
+
+    //then
+    result.failed.map {
+      case JavaScriptException(error) =>
+        error.toString should include ("operation not permitted")
+    }.andThen {
+      case _ =>
+        //cleanup
+        fs.unlinkSync(file)
+        fs.rmdirSync(tmpDir)
+    }
+  }
+
+  it should "move file when rename" in {
+    //given
+    val tmpDir1 = fs.mkdtempSync(path.join(os.tmpdir(), "scommons-nodejs-"))
+    val tmpDir2 = fs.mkdtempSync(path.join(os.tmpdir(), "scommons-nodejs-"))
+    fs.existsSync(tmpDir1) shouldBe true
+    fs.existsSync(tmpDir2) shouldBe true
+
+    val file = path.join(tmpDir1, "example.txt")
+    fs.writeFileSync(file, "hello, World!!!")
+    fs.existsSync(file) shouldBe true
+
+    val oldPath = file
+    val newPath = path.join(tmpDir2, "example.txt")
+    fs.existsSync(oldPath) shouldBe true
+    fs.existsSync(newPath) shouldBe false
+
+    //when
+    val result = fs.rename(oldPath, newPath)
+
+    //then
+    result.map { _ =>
+      fs.existsSync(oldPath) shouldBe false
+      fs.existsSync(newPath) shouldBe true
+    }.andThen {
+      case _ =>
+        //cleanup
+        fs.unlinkSync(newPath)
+        fs.rmdirSync(tmpDir2)
+        fs.rmdirSync(tmpDir1)
+    }
+  }
+
   it should "return stats when lstatSync" in {
     //when
     val stats = fs.lstatSync(os.homedir())

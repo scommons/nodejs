@@ -17,6 +17,15 @@ trait FS {
     p.future
   }
 
+  def rename(oldPath: String, newPath: String): Future[Unit] = {
+    val p = Promise[Unit]()
+    raw.FS.rename(oldPath, newPath, { error =>
+      if (error != null && !js.isUndefined(error)) p.failure(js.JavaScriptException(error))
+      else p.success(())
+    })
+    p.future
+  }
+
   def openSync(path: String, flags: Int): Int = raw.FS.openSync(path, flags)
   
   def closeSync(fd: Int): Unit = raw.FS.closeSync(fd)

@@ -14,6 +14,8 @@ object FS extends js.Object {
 
   def readdir(path: String | URL, callback: js.Function2[js.Error, js.Array[String], Unit]): Unit = js.native
   
+  def rename(oldPath: String | URL, newPath: String | URL, callback: js.Function1[js.Error, Unit]): Unit = js.native
+
   def openSync(path: String | URL, flags: Int): Int = js.native
 
   def closeSync(fd: Int): Unit = js.native
