@@ -36,15 +36,16 @@ class FSSpec extends AsyncTestSpec {
   
   it should "fail if newPath is dir when rename" in {
     //given
-    val tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "scommons-nodejs-"))
-    fs.existsSync(tmpDir) shouldBe true
+    val tmpDir1 = fs.mkdtempSync(path.join(os.tmpdir(), "scommons-nodejs-"))
+    val tmpDir2 = fs.mkdtempSync(path.join(os.tmpdir(), "scommons-nodejs-"))
+    fs.existsSync(tmpDir1) shouldBe true
 
-    val file = path.join(tmpDir, "example.txt")
+    val file = path.join(tmpDir1, "example.txt")
     fs.writeFileSync(file, "hello, World!!!")
     fs.existsSync(file) shouldBe true
 
     val oldPath = file
-    val newPath = os.homedir()
+    val newPath = tmpDir2
 
     //when
     val result = fs.rename(oldPath, newPath)
@@ -52,12 +53,13 @@ class FSSpec extends AsyncTestSpec {
     //then
     result.failed.map {
       case JavaScriptException(error) =>
-        error.toString should include ("operation not permitted")
+        error.toString should include ("EISDIR: illegal operation on a directory")
     }.andThen {
       case _ =>
         //cleanup
         fs.unlinkSync(file)
-        fs.rmdirSync(tmpDir)
+        fs.rmdirSync(tmpDir1)
+        fs.rmdirSync(tmpDir2)
     }
   }
 
