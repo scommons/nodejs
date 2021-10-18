@@ -5,11 +5,11 @@ import scommons.nodejs.raw.FSConstants._
 import scommons.nodejs.raw.{FSConstants, FileOptions}
 import scommons.nodejs.test.AsyncTestSpec
 
+import scala.Ordering.Double.IeeeOrdering
 import scala.concurrent.Future
 import scala.scalajs.js
 import scala.scalajs.js.JavaScriptException
 import scala.scalajs.js.typedarray.Uint8Array
-import scala.Ordering.Double.IeeeOrdering
 
 class FSSpec extends AsyncTestSpec {
 
@@ -92,6 +92,57 @@ class FSSpec extends AsyncTestSpec {
         fs.unlinkSync(newPath)
         fs.rmdirSync(tmpDir2)
         fs.rmdirSync(tmpDir1)
+    }
+  }
+
+  it should "fail if invalid fd when ftruncate" in {
+    //given
+    val tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "scommons-nodejs-"))
+    val file = path.join(tmpDir, "example.txt")
+    fs.writeFileSync(file, "hello, World!!!")
+    val fd = fs.openSync(file, FSConstants.O_WRONLY)
+    fs.closeSync(fd)
+
+    //when
+    val result = fs.ftruncate(fd, 5)
+
+    //then
+    result.failed.map {
+      case JavaScriptException(error) =>
+        error.toString should include ("EBADF: bad file descriptor")
+    }.andThen {
+      case _ =>
+        //cleanup
+        fs.unlinkSync(file)
+        fs.rmdirSync(tmpDir)
+    }
+  }
+
+  it should "truncate file when ftruncate" in {
+    //given
+    val tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "scommons-nodejs-"))
+    val file = path.join(tmpDir, "example.txt")
+    fs.writeFileSync(file, "hello, World!!!")
+    fs.readFileSync(file, new FileOptions {
+      override val encoding = "utf8"
+    }) shouldBe "hello, World!!!"
+    val fd = fs.openSync(file, FSConstants.O_WRONLY)
+
+    //when
+    val result = fs.ftruncate(fd, 5)
+
+    //then
+    result.map { _ =>
+      fs.closeSync(fd)
+      fs.lstatSync(file).size shouldBe 5
+      fs.readFileSync(file, new FileOptions {
+        override val encoding = "utf8"
+      }) shouldBe "hello"
+    }.andThen {
+      case _ =>
+        //cleanup
+        fs.unlinkSync(file)
+        fs.rmdirSync(tmpDir)
     }
   }
 
