@@ -2,7 +2,6 @@ package scommons.nodejs.test
 
 import org.scalactic.source.Position
 import org.scalamock.scalatest.AsyncMockFactory
-import org.scalatest.Assertion
 import org.scalatest.concurrent.PatienceConfiguration
 import org.scalatest.exceptions.{StackDepthException, TestFailedDueToTimeoutException}
 import org.scalatest.flatspec.AsyncFlatSpec
@@ -25,7 +24,7 @@ trait AsyncTestSpec extends AsyncFlatSpec
     interval = scaled(Span(100, Millis))
   )
 
-  def eventually(mayFailBlock: => Assertion)(implicit config: PatienceConfig, pos: Position): Future[Assertion] = {
+  def eventually[T](mayFailBlock: => T)(implicit config: PatienceConfig, pos: Position): Future[T] = {
     val startMillis = System.currentTimeMillis()
     val timeout = config.timeout
     val interval = config.interval
@@ -34,7 +33,7 @@ trait AsyncTestSpec extends AsyncFlatSpec
     var lastEx: Throwable = null
     var attempt = 0
 
-    val promise = Promise[Assertion]()
+    val promise = Promise[T]()
 
     timer = global.setInterval({ () =>
       try {
@@ -79,8 +78,8 @@ trait AsyncTestSpec extends AsyncFlatSpec
     promise.future
   }
 
-  def executeAfterDelay(millis: Int)(block: => Assertion): Future[Assertion] = {
-    val promise = Promise[Assertion]()
+  def executeAfterDelay[T](millis: Int)(block: => T): Future[T] = {
+    val promise = Promise[T]()
 
     global.setTimeout({ () =>
       try {
