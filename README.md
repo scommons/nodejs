@@ -1,5 +1,5 @@
 
-[![Build Status](https://travis-ci.com/scommons/scommons-nodejs.svg?branch=master)](https://travis-ci.com/scommons/scommons-nodejs)
+[![CI](https://github.com/scommons/scommons-nodejs/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/scommons/scommons-nodejs/actions/workflows/ci.yml?query=workflow%3Aci+branch%3Amaster)
 [![Coverage Status](https://coveralls.io/repos/github/scommons/scommons-nodejs/badge.svg?branch=master)](https://coveralls.io/github/scommons/scommons-nodejs?branch=master)
 [![scala-index](https://index.scala-lang.org/scommons/scommons-nodejs/scommons-nodejs-core/latest.svg)](https://index.scala-lang.org/scommons/scommons-nodejs/scommons-nodejs-core)
 [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.1.0.svg)](https://www.scala-js.org)
