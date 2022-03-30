@@ -26,9 +26,11 @@ object ChildProcess extends js.Object {
 @js.native
 trait ChildProcess extends EventEmitter {
 
-  val stdin: EventEmitter = js.native
-  val stdout: EventEmitter = js.native
-  val stderr: EventEmitter = js.native
+  val stdin: Writable = js.native
+  val stdout: Readable = js.native
+  val stderr: Readable = js.native
+  
+  def kill(signal: js.UndefOr[Int | String] = js.native): Boolean = js.native
 }
 
 trait ChildProcessOptions extends js.Object {
