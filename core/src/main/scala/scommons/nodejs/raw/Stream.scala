@@ -29,4 +29,6 @@ trait Readable extends EventEmitter {
   def resume(): Readable = js.native
   
   def read(size: js.UndefOr[Int] = js.native): Uint8Array = js.native
+
+  def destroy(error: js.UndefOr[js.Error] = js.native): Readable = js.native
 }

@@ -5,6 +5,7 @@ import scommons.nodejs.raw._
 import scala.concurrent.{Future, Promise}
 import scala.scalajs.js
 import scala.scalajs.js.typedarray.Uint8Array
+import scala.scalajs.js.|
 
 trait FS {
 
@@ -96,8 +97,14 @@ trait FS {
     raw.FS.writeFileSync(file, data, options)
   }
   
+  def createReadStream(path: String,
+                       options: js.UndefOr[String | CreateReadStreamOptions] = js.undefined): ReadStream = {
+    
+    raw.FS.createReadStream(path, options)
+  }
+
   def createWriteStream(path: String,
-                        options: js.UndefOr[CreateWriteStreamOptions] = js.undefined): WriteStream = {
+                        options: js.UndefOr[String | CreateWriteStreamOptions] = js.undefined): WriteStream = {
     
     raw.FS.createWriteStream(path, options)
   }

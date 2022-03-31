@@ -57,8 +57,11 @@ object FS extends js.Object {
                     data: String,
                     options: js.UndefOr[FileOptions]): Unit = js.native
   
+  def createReadStream(path: String | URL,
+                       options: js.UndefOr[String | CreateReadStreamOptions] = js.native): ReadStream = js.native
+  
   def createWriteStream(path: String | URL,
-                        options: js.UndefOr[CreateWriteStreamOptions]): WriteStream = js.native
+                        options: js.UndefOr[String | CreateWriteStreamOptions] = js.native): WriteStream = js.native
 }
 
 /**
