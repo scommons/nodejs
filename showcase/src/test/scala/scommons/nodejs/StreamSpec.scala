@@ -1,9 +1,9 @@
 package scommons.nodejs
 
-import scommons.nodejs.raw.{CreateReadStreamOptions, FileOptions}
+import scommons.nodejs.raw.FileOptions
 import scommons.nodejs.test.AsyncTestSpec
 
-import scala.concurrent.{Future, Promise}
+import scala.concurrent.Promise
 import scala.scalajs.js
 
 class StreamSpec extends AsyncTestSpec {
@@ -44,97 +44,32 @@ class StreamSpec extends AsyncTestSpec {
     }
   }
 
-  it should "fail with error when read data" in {
-    //given
-    val tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "scommons-nodejs-"))
-    val file = path.join(tmpDir, "example.txt")
-    fs.writeFileSync(file, "hello, World!!!")
-    val readable = fs.createReadStream(file)
-    val reader = new StreamReader(readable)
-    
-    def loop(result: String): Future[String] = {
-      reader.readNextBytes(5).flatMap {
-        case None => Future.successful(result)
-        case Some(content) =>
-
-          //when
-          readable.destroy(js.Error("test error"))
-
-          loop(result + content.toString)
-      }
-    }
-    val resultF = loop("")
-    
-    //then
-    resultF.failed.map { ex =>
-      ex.toString should include ("test error")
-      
-      //cleanup
-      fs.unlinkSync(file)
-      fs.existsSync(file) shouldBe false
-
-      fs.rmdirSync(tmpDir)
-      fs.existsSync(tmpDir) shouldBe false
-    }
-  }
-
-  it should "end stream without error when read data" in {
-    //given
-    val tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "scommons-nodejs-"))
-    val file = path.join(tmpDir, "example.txt")
-    fs.writeFileSync(file, "hello, World!!!")
-    val readable = fs.createReadStream(file, new CreateReadStreamOptions {
-      override val highWaterMark: js.UndefOr[Int] = 5
-    })
-    val reader = new StreamReader(readable)
-    
-    def loop(result: String): Future[String] = {
-      reader.readNextBytes(5).flatMap {
-        case None => Future.successful(result)
-        case Some(content) =>
-          content.length shouldBe 5
-
-          //when
-          readable.destroy()
-
-          loop(result + content.toString)
-      }
-    }
-    val resultF = loop("")
-    
-    //then
-    resultF.map { result =>
-      result shouldBe "hello"
-      
-      //cleanup
-      fs.unlinkSync(file)
-      fs.existsSync(file) shouldBe false
-
-      fs.rmdirSync(tmpDir)
-      fs.existsSync(tmpDir) shouldBe false
-    }
-  }
-
   it should "read data from file" in {
     //given
     val tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "scommons-nodejs-"))
     val file = path.join(tmpDir, "example.txt")
     fs.writeFileSync(file, "hello, World!!!")
-    val reader = new StreamReader(fs.createReadStream(file, new CreateReadStreamOptions {
-      override val highWaterMark: js.UndefOr[Int] = 2
-    }))
-    
-    def loop(result: String): Future[String] = {
-      reader.readNextBytes(4).flatMap {
-        case None => Future.successful(result)
-        case Some(content) =>
-          content.length should be <= 4
-          loop(result + content.toString)
-      }
-    }
+    val p = Promise[String]()
     
     //when
-    val resultF = loop("")
+    var result = ""
+    val readable = fs.createReadStream(file)
+    val readableListener: js.Function = { () =>
+      @annotation.tailrec
+      def loop(result: String): String = {
+        val content = readable.read(5)
+        if (content == null) result
+        else loop(result + content.toString)
+      }
+
+      result = loop(result)
+    }
+    readable.on("readable", readableListener)
+    readable.once("end", { () =>
+      readable.removeListener("readable", readableListener)
+      p.success(result)
+    })
+    val resultF = p.future
     
     //then
     resultF.map { result =>

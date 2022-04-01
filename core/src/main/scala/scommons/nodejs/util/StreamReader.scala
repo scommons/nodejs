@@ -1,4 +1,4 @@
-package scommons.nodejs
+package scommons.nodejs.util
 
 import scommons.nodejs.raw.Readable
 
@@ -6,7 +6,7 @@ import scala.concurrent.{Future, Promise}
 import scala.scalajs.js
 import scala.scalajs.js.typedarray.Uint8Array
 
-class StreamReader(readable: Readable) {
+class StreamReader(val readable: Readable) {
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
