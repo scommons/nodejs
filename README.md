@@ -5,7 +5,9 @@
 [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.1.0.svg)](https://www.scala-js.org)
 
 ## Scala Commons Node.js
-[Scala.js](https://www.scala-js.org) facades for [Node.js](https://nodejs.org/docs/latest-v9.x/api/documentation.html) platform.
+[Scala.js](https://www.scala-js.org) facades for
+[Node.js](https://nodejs.org/docs/latest-v12.x/api/documentation.html)
+platform.
 
 
 ### How to add it to your project
@@ -28,6 +30,7 @@ resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositor
 
 ### How to use it
 
+Facades for [Node.js](https://nodejs.org/docs/latest-v12.x/api/) APIs:
 * [Process](core/src/main/scala/scommons/nodejs/Process.scala) => [tests](showcase/src/test/scala/scommons/nodejs/ProcessSpec.scala)
 * [ChildProcess](core/src/main/scala/scommons/nodejs/ChildProcess.scala) => [tests](showcase/src/test/scala/scommons/nodejs/ChildProcessSpec.scala)
 * [EventEmitter](core/src/main/scala/scommons/nodejs/raw/EventEmitter.scala) => [tests](showcase/src/test/scala/scommons/nodejs/EventEmitterSpec.scala)
@@ -39,12 +42,9 @@ resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositor
 * [Stream](core/src/main/scala/scommons/nodejs/raw/Stream.scala) => [tests](showcase/src/test/scala/scommons/nodejs/StreamSpec.scala)
 * [Timers](core/src/main/scala/scommons/nodejs/raw/Timers.scala) => [tests](test/src/test/scala/scommons/nodejs/test/AsyncTestSpecTest.scala)
 
-### How to Build
-
-To build and run all the tests use the following command:
-```bash
-sbt test
-```
+Useful Scala APIs and utils:
+* [StreamReader](core/src/main/scala/scommons/nodejs/util/StreamReader.scala) => [tests](showcase/src/test/scala/scommons/nodejs/util/StreamReaderSpec.scala)
+* [SubProcess](core/src/main/scala/scommons/nodejs/util/SubProcess.scala) => [tests](showcase/src/test/scala/scommons/nodejs/util/SubProcessSpec.scala)
 
 ## Documentation
 

@@ -26,6 +26,10 @@ object ChildProcess extends js.Object {
 @js.native
 trait ChildProcess extends EventEmitter {
 
+  val spawnargs: js.Array[String] = js.native
+  val spawnfile: String = js.native
+  val exitCode: js.UndefOr[Int] = js.native
+
   val stdin: Writable = js.native
   val stdout: Readable = js.native
   val stderr: Readable = js.native
