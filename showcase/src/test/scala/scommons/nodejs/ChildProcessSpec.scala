@@ -3,8 +3,11 @@ package scommons.nodejs
 import org.scalatest.Succeeded
 import scommons.nodejs.ChildProcess._
 import scommons.nodejs.test.AsyncTestSpec
+import scommons.nodejs.util.StreamReader
 
+import scala.concurrent.Future
 import scala.scalajs.js
+import scala.scalajs.js.Dynamic.literal
 
 class ChildProcessSpec extends AsyncTestSpec {
   
@@ -122,6 +125,17 @@ class ChildProcessSpec extends AsyncTestSpec {
   
   it should "call native spawn with args and options" in {
     //given
+    val tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "scommons-nodejs-"))
+    val file = path.join(tmpDir, "example.txt")
+    val expectedContent = "hello, world!!!"
+    fs.writeFileSync(file, expectedContent)
+    val stdoutStream = fs.createReadStream(file)
+    val onceMock = mockFunction[String, js.Function, raw.EventEmitter]
+    val rawProcess = literal(
+      "stdout" -> stdoutStream,
+      "once" -> onceMock
+    ).asInstanceOf[raw.ChildProcess]
+
     val native = raw.ChildProcess.asInstanceOf[js.Dynamic]
     val nativeSpawn = native.spawn
     val spawnMock =
@@ -130,37 +144,72 @@ class ChildProcessSpec extends AsyncTestSpec {
     val command = "some command"
     val args = List("some", "args")
     val options = new ChildProcessOptions {}
-    val expectedResult = new js.Object {}.asInstanceOf[raw.ChildProcess]
     
     //then
     spawnMock.expects(*, *, *).onCall { (resCommand, resArgs, resOptions) =>
       resCommand shouldBe command
       resArgs.get.toList shouldBe args
       resOptions should be theSameInstanceAs options
-      
-      expectedResult
+      rawProcess
+    }
+    var exitCallback: js.Function1[Int, js.Any] = null
+    onceMock.expects("exit", *).onCall { (_, callback) =>
+      exitCallback = callback.asInstanceOf[js.Function1[Int, js.Any]]
+      rawProcess
+    }
+    onceMock.expects("error", *)
+
+    def loop(reader: StreamReader, result: String): Future[String] = {
+      reader.readNextBytes(5).flatMap {
+        case None => Future.successful(result)
+        case Some(content) =>
+          loop(reader, result + content.toString)
+      }
     }
 
     //when
-    val result = child_process.spawn(command, args, Some(options))
+    val resultF = child_process.spawn(command, args, Some(options))
 
     //then
-    result should be theSameInstanceAs expectedResult
-    
-    //cleanup
-    native.spawn = nativeSpawn
-    Succeeded
+    (for {
+      result <- resultF
+      output <- loop(result.stdout, "")
+      _ = exitCallback(0)
+      _ <- result.exitF
+    } yield {
+      result.child should be theSameInstanceAs rawProcess
+      result.stdout.readable shouldBe stdoutStream
+      output shouldBe expectedContent
+    }).andThen {
+      case _ =>
+        //cleanup
+        native.spawn = nativeSpawn
+        fs.unlinkSync(file)
+        fs.existsSync(file) shouldBe false
+        fs.rmdirSync(tmpDir)
+        fs.existsSync(tmpDir) shouldBe false
+    }
   }
   
   it should "call native spawn without args or options" in {
     //given
+    val tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "scommons-nodejs-"))
+    val file = path.join(tmpDir, "example.txt")
+    val expectedContent = "hello, world!!!"
+    fs.writeFileSync(file, expectedContent)
+    val stdoutStream = fs.createReadStream(file)
+    val onceMock = mockFunction[String, js.Function, raw.EventEmitter]
+    val rawProcess = literal(
+      "stdout" -> stdoutStream,
+      "once" -> onceMock
+    ).asInstanceOf[raw.ChildProcess]
+
     val native = raw.ChildProcess.asInstanceOf[js.Dynamic]
     val nativeSpawn = native.spawn
     val spawnMock =
       mockFunction[String, js.UndefOr[js.Array[String]], js.UndefOr[ChildProcessOptions], raw.ChildProcess]
     native.spawn = spawnMock
     val command = "some command"
-    val expectedResult = new js.Object {}.asInstanceOf[raw.ChildProcess]
     
     //then
     spawnMock.expects(*, *, *).onCall { (resCommand, resArgs, resOptions) =>
@@ -168,17 +217,44 @@ class ChildProcessSpec extends AsyncTestSpec {
       resArgs.isEmpty shouldBe true
       resOptions.isEmpty shouldBe true
       
-      expectedResult
+      rawProcess
+    }
+    var exitCallback: js.Function1[Int, js.Any] = null
+    onceMock.expects("exit", *).onCall { (_, callback) =>
+      exitCallback = callback.asInstanceOf[js.Function1[Int, js.Any]]
+      rawProcess
+    }
+    onceMock.expects("error", *)
+
+    def loop(reader: StreamReader, result: String): Future[String] = {
+      reader.readNextBytes(5).flatMap {
+        case None => Future.successful(result)
+        case Some(content) =>
+          loop(reader, result + content.toString)
+      }
     }
 
     //when
-    val result = child_process.spawn(command)
+    val resultF = child_process.spawn(command)
 
     //then
-    result should be theSameInstanceAs expectedResult
-    
-    //cleanup
-    native.spawn = nativeSpawn
-    Succeeded
+    (for {
+      result <- resultF
+      output <- loop(result.stdout, "")
+      _ = exitCallback(0)
+      _ <- result.exitF
+    } yield {
+      result.child should be theSameInstanceAs rawProcess
+      result.stdout.readable shouldBe stdoutStream
+      output shouldBe expectedContent
+    }).andThen {
+      case _ =>
+        //cleanup
+        native.spawn = nativeSpawn
+        fs.unlinkSync(file)
+        fs.existsSync(file) shouldBe false
+        fs.rmdirSync(tmpDir)
+        fs.existsSync(tmpDir) shouldBe false
+    }
   }
 }

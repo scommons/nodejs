@@ -2,6 +2,7 @@ package scommons.nodejs
 
 import scommons.nodejs.ChildProcess._
 import scommons.nodejs.raw.{ChildProcess => native}
+import scommons.nodejs.util.SubProcess
 
 import scala.concurrent.{Future, Promise}
 import scala.scalajs.js
@@ -37,9 +38,9 @@ trait ChildProcess {
   def spawn(command: String,
             args: Seq[String] = Nil,
             options: Option[ChildProcessOptions] = None
-           ): raw.ChildProcess = {
+           ): Future[SubProcess] = {
     
-    native.spawn(
+    SubProcess.wrap(native.spawn(
       command = command,
       args =
         if (args.isEmpty) js.undefined
@@ -48,7 +49,7 @@ trait ChildProcess {
         case None => js.undefined
         case Some(v) => v
       }
-    )
+    ))
   }
 }
 
