@@ -41,6 +41,7 @@ Facades for [Node.js](https://nodejs.org/docs/latest-v12.x/api/) APIs:
 * [URL](core/src/main/scala/scommons/nodejs/raw/URL.scala) => [tests](showcase/src/test/scala/scommons/nodejs/URLSpec.scala)
 * [Stream](core/src/main/scala/scommons/nodejs/raw/Stream.scala) => [tests](showcase/src/test/scala/scommons/nodejs/StreamSpec.scala)
 * [Timers](core/src/main/scala/scommons/nodejs/raw/Timers.scala) => [tests](test/src/test/scala/scommons/nodejs/test/AsyncTestSpecTest.scala)
+* [Buffer](core/src/main/scala/scommons/nodejs/Buffer.scala) => [tests](showcase/src/test/scala/scommons/nodejs/BufferSpec.scala)
 
 Useful Scala APIs and utils:
 * [StreamReader](core/src/main/scala/scommons/nodejs/util/StreamReader.scala) => [tests](showcase/src/test/scala/scommons/nodejs/util/StreamReaderSpec.scala)
