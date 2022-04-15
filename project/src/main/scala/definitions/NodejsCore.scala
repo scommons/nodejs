@@ -14,7 +14,9 @@ object NodejsCore extends ScalaJsModule {
   override def definition: Project = super.definition
     .settings(
       description := "Scala.js facades for Node.js platform",
-      coverageExcludedPackages := "scommons.nodejs.raw"
+      coverageExcludedPackages :=
+        "scommons.nodejs.raw" +
+          ";scommons.nodejs.Buffer"
     )
 
   override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Nil

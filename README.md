@@ -39,7 +39,9 @@ Facades for [Node.js](https://nodejs.org/docs/latest-v12.x/api/) APIs:
 * [OS](core/src/main/scala/scommons/nodejs/raw/OS.scala) => [tests](showcase/src/test/scala/scommons/nodejs/OSSpec.scala)
 * [Path](core/src/main/scala/scommons/nodejs/raw/Path.scala) => [tests](showcase/src/test/scala/scommons/nodejs/PathSpec.scala)
 * [URL](core/src/main/scala/scommons/nodejs/raw/URL.scala) => [tests](showcase/src/test/scala/scommons/nodejs/URLSpec.scala)
-* [Stream](core/src/main/scala/scommons/nodejs/raw/Stream.scala) => [tests](showcase/src/test/scala/scommons/nodejs/StreamSpec.scala)
+* Stream
+  * [Readable](core/src/main/scala/scommons/nodejs/raw/Readable.scala) => [tests](showcase/src/test/scala/scommons/nodejs/stream/ReadableSpec.scala)
+  * [Writable](core/src/main/scala/scommons/nodejs/raw/Writable.scala) => [tests](showcase/src/test/scala/scommons/nodejs/stream/WritableSpec.scala)
 * [Timers](core/src/main/scala/scommons/nodejs/raw/Timers.scala) => [tests](test/src/test/scala/scommons/nodejs/test/AsyncTestSpecTest.scala)
 * [Buffer](core/src/main/scala/scommons/nodejs/Buffer.scala) => [tests](showcase/src/test/scala/scommons/nodejs/BufferSpec.scala)
 

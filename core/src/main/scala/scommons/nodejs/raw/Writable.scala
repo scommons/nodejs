@@ -18,17 +18,3 @@ trait Writable extends EventEmitter {
             encoding: js.UndefOr[String] = js.native,
             callback: js.UndefOr[js.Function1[js.Error, Unit]] = js.native): Boolean = js.native
 }
-
-/**
- * https://nodejs.org/docs/latest-v12.x/api/stream.html#stream_class_stream_readable
- */
-@js.native
-trait Readable extends EventEmitter {
-
-  def pause(): Readable = js.native
-  def resume(): Readable = js.native
-  
-  def read(size: js.UndefOr[Int] = js.native): Uint8Array = js.native
-
-  def destroy(error: js.UndefOr[js.Error] = js.native): Readable = js.native
-}
