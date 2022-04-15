@@ -1,10 +1,10 @@
 package scommons.nodejs.util
 
+import scommons.nodejs.Buffer
 import scommons.nodejs.raw.Readable
 
 import scala.concurrent.{Future, Promise}
 import scala.scalajs.js
-import scala.scalajs.js.typedarray.Uint8Array
 
 class StreamReader(val readable: Readable) {
 
@@ -30,9 +30,9 @@ class StreamReader(val readable: Readable) {
   readable.once("end", endListener)
   readable.once("close", endListener)
 
-  def readNextBytes(size: Int): Future[Option[Uint8Array]] = {
+  def readNextBytes(size: Int): Future[Option[Buffer]] = {
 
-    def loop(): Future[Option[Uint8Array]] = {
+    def loop(): Future[Option[Buffer]] = {
       ready.future.flatMap { _ =>
         if (isEnd) Future.successful(None)
         else {

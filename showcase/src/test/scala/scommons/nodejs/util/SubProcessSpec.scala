@@ -1,7 +1,7 @@
 package scommons.nodejs.util
 
-import org.scalatest.Assertion
 import scommons.nodejs._
+import scommons.nodejs.stream.Readable
 import scommons.nodejs.test.AsyncTestSpec
 
 import scala.concurrent.Future
@@ -13,8 +13,7 @@ class SubProcessSpec extends AsyncTestSpec {
   it should "return successful Future when wrap" in {
     //given
     val expectedContent = "test content"
-    val (tmpDir, file) = createTempFile(expectedContent)
-    val stdoutStream = fs.createReadStream(file)
+    val stdoutStream = Readable.from(Buffer.from(expectedContent))
     val onceMock = mockFunction[String, js.Function, raw.EventEmitter]
     val childProcess = literal(
       "stdout" -> stdoutStream,
@@ -41,15 +40,12 @@ class SubProcessSpec extends AsyncTestSpec {
       result.child shouldBe childProcess
       result.stdout.readable shouldBe stdoutStream
       output shouldBe expectedContent
-    }).andThen {
-      case _ => cleanupTempFile(tmpDir, file)
-    }
+    })
   }
 
   it should "return failed Future if error when wrap" in {
     //given
-    val (tmpDir, file) = createTempFile("test content")
-    val stdoutStream = fs.createReadStream(file)
+    val stdoutStream = Readable.from(Buffer.from("test output"))
     val onceMock = mockFunction[String, js.Function, raw.EventEmitter]
     val childProcess = literal(
       "stdout" -> stdoutStream,
@@ -81,19 +77,15 @@ class SubProcessSpec extends AsyncTestSpec {
       inside(result) { case js.JavaScriptException(error: js.Error) => 
         error.message shouldBe "test error"
       }
-    }).andThen {
-      case _ => cleanupTempFile(tmpDir, file)
-    }
+    })
   }
 
   it should "return failed exit Future with stderr when wrap" in {
     //given
     val expectedOutput = "test content"
     val expectedError = "test error"
-    val (tmpDir1, file1) = createTempFile(expectedOutput)
-    val (tmpDir2, file2) = createTempFile(expectedError)
-    val stdoutStream = fs.createReadStream(file1)
-    val stderrStream = fs.createReadStream(file2)
+    val stdoutStream = Readable.from(Buffer.from(expectedOutput))
+    val stderrStream = Readable.from(Buffer.from(expectedError))
     val onceMock = mockFunction[String, js.Function, raw.EventEmitter]
     val childProcess = literal(
       "stdout" -> stdoutStream,
@@ -124,20 +116,14 @@ class SubProcessSpec extends AsyncTestSpec {
       result.child shouldBe childProcess
       result.stdout.readable shouldBe stdoutStream
       output shouldBe expectedOutput
-    }).andThen {
-      case _ =>
-        cleanupTempFile(tmpDir1, file1)
-        cleanupTempFile(tmpDir2, file2)
-    }
+    })
   }
 
   it should "return failed exit Future with generic error when wrap" in {
     //given
     val expectedOutput = "test content"
-    val (tmpDir1, file1) = createTempFile(expectedOutput)
-    val (tmpDir2, file2) = createTempFile("")
-    val stdoutStream = fs.createReadStream(file1)
-    val stderrStream = fs.createReadStream(file2)
+    val stdoutStream = Readable.from(Buffer.from(expectedOutput))
+    val stderrStream = Readable.from(new js.Array[String](0))
     val onceMock = mockFunction[String, js.Function, raw.EventEmitter]
     val childProcess = literal(
       "spawnargs" -> js.Array("app", "arg1", "arg2"),
@@ -173,20 +159,14 @@ class SubProcessSpec extends AsyncTestSpec {
       result.child shouldBe childProcess
       result.stdout.readable shouldBe stdoutStream
       output shouldBe expectedOutput
-    }).andThen {
-      case _ =>
-        cleanupTempFile(tmpDir1, file1)
-        cleanupTempFile(tmpDir2, file2)
-    }
+    })
   }
 
   it should "return failed exit Future with recovered error when wrap" in {
     //given
     val expectedOutput = "test content"
-    val (tmpDir1, file1) = createTempFile(expectedOutput)
-    val (tmpDir2, file2) = createTempFile("test error")
-    val stdoutStream = fs.createReadStream(file1)
-    val stderrStream = fs.createReadStream(file2)
+    val stdoutStream = Readable.from(Buffer.from(expectedOutput))
+    val stderrStream = Readable.from(Buffer.from("test error"))
     val onceMock = mockFunction[String, js.Function, raw.EventEmitter]
     val childProcess = literal(
       "spawnargs" -> js.Array("app", "arg1", "arg2"),
@@ -223,11 +203,7 @@ class SubProcessSpec extends AsyncTestSpec {
       result.child shouldBe childProcess
       result.stdout.readable shouldBe stdoutStream
       output shouldBe expectedOutput
-    }).andThen {
-      case _ =>
-        cleanupTempFile(tmpDir1, file1)
-        cleanupTempFile(tmpDir2, file2)
-    }
+    })
   }
 
   private def loop(reader: StreamReader, result: String): Future[String] = {
@@ -236,20 +212,5 @@ class SubProcessSpec extends AsyncTestSpec {
       case Some(content) =>
         loop(reader, result + content.toString)
     }
-  }
-  
-  private def createTempFile(content: String, name: String = "example.txt"): (String, String) = {
-    val tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "scommons-nodejs-"))
-    val file = path.join(tmpDir, name)
-    fs.writeFileSync(file, content)
-    (tmpDir, file)
-  }
-
-  private def cleanupTempFile(tmpDir: String, file: String): Assertion = {
-    fs.unlinkSync(file)
-    fs.existsSync(file) shouldBe false
-
-    fs.rmdirSync(tmpDir)
-    fs.existsSync(tmpDir) shouldBe false
   }
 }
