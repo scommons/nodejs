@@ -97,11 +97,7 @@ class FSSpec extends AsyncTestSpec {
 
   it should "fail if invalid fd when ftruncate" in {
     //given
-    val tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "scommons-nodejs-"))
-    val file = path.join(tmpDir, "example.txt")
-    fs.writeFileSync(file, "hello, World!!!")
-    val fd = fs.openSync(file, FSConstants.O_WRONLY)
-    fs.closeSync(fd)
+    val fd = 1234567890
 
     //when
     val result = fs.ftruncate(fd, 5)
@@ -110,11 +106,6 @@ class FSSpec extends AsyncTestSpec {
     result.failed.map {
       case JavaScriptException(error) =>
         error.toString should include ("EBADF: bad file descriptor")
-    }.andThen {
-      case _ =>
-        //cleanup
-        fs.unlinkSync(file)
-        fs.rmdirSync(tmpDir)
     }
   }
 
