@@ -2,6 +2,7 @@ package scommons.nodejs.util
 
 import scommons.nodejs._
 import scommons.nodejs.raw.CreateReadStreamOptions
+import scommons.nodejs.stream.Readable
 import scommons.nodejs.test.AsyncTestSpec
 
 import scala.concurrent.Future
@@ -33,7 +34,7 @@ class StreamReaderSpec extends AsyncTestSpec {
     //then
     resultF.failed.map { ex =>
       ex.toString should include ("test error")
-      
+    }.andThen { case _ =>
       //cleanup
       fs.unlinkSync(file)
       fs.existsSync(file) shouldBe false
@@ -70,7 +71,7 @@ class StreamReaderSpec extends AsyncTestSpec {
     //then
     resultF.map { result =>
       result shouldBe "hello"
-      
+    }.andThen { case _ =>
       //cleanup
       fs.unlinkSync(file)
       fs.existsSync(file) shouldBe false
@@ -104,13 +105,39 @@ class StreamReaderSpec extends AsyncTestSpec {
     //then
     resultF.map { result =>
       result shouldBe "hello, World!!!"
-      
+    }.andThen { case _ =>
       //cleanup
       fs.unlinkSync(file)
       fs.existsSync(file) shouldBe false
 
       fs.rmdirSync(tmpDir)
       fs.existsSync(tmpDir) shouldBe false
+    }
+  }
+
+  it should "read all lines when readAllLines" in {
+    //given
+    val expectedContent =
+      """some long text
+        |,
+        |
+        |more text at the end""".stripMargin
+    val reader = new StreamReader(Readable.from(Buffer.from(expectedContent)))
+    var result = ""
+    
+    //when
+    val resultF = reader.readAllLines { line =>
+      line should not include("\n")
+
+      if (result != "") {
+        result = result + "\n"
+      }
+      result = result + line
+    }
+    
+    //then
+    resultF.map { _ =>
+      result shouldBe expectedContent
     }
   }
 }

@@ -48,4 +48,38 @@ class StreamReader(val readable: Readable) {
 
     loop()
   }
+
+  def readAllLines(onNextLine: String => Unit): Future[Unit] = {
+    var chunks = new js.Array[Buffer](0)
+
+    @annotation.tailrec
+    def loopOverBuffer(buf: Buffer): Unit = {
+      val newLineIndex = buf.indexOf('\n'.toInt)
+      if (newLineIndex < 0) chunks.push(buf)
+      else {
+        chunks.push(buf.subarray(0, newLineIndex))
+        onNextLine(Buffer.concat(chunks).toString)
+
+        chunks = new js.Array[Buffer](0)
+        if ((newLineIndex + 1) < buf.length) {
+          loopOverBuffer(buf.subarray(newLineIndex + 1, buf.length))
+        }
+      }
+    }
+    
+    def loop(): Future[Unit] = {
+      readNextBytes(16).flatMap {
+        case None =>
+          if (chunks.length != 0) {
+            onNextLine(Buffer.concat(chunks).toString)
+          }
+          Future.unit
+        case Some(buf) =>
+          loopOverBuffer(buf)
+          loop()
+      }
+    }
+    
+    loop()
+  }
 }
