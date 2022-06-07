@@ -16,12 +16,12 @@ object SubProcess {
   
   def wrap(childProcess: raw.ChildProcess): Future[SubProcess] = {
     val stdout = new StreamReader(childProcess.stdout)
+    val stderr = new StreamReader(childProcess.stderr)
 
     val exitPromise = Promise[Unit]()
     childProcess.once("exit", { code: Int =>
       if (code == 0) exitPromise.success(())
       else {
-        val stderr = new StreamReader(childProcess.stderr)
         stderr.readNextBytes(8096).recover {
           case NonFatal(_) => None
         }.foreach { content =>

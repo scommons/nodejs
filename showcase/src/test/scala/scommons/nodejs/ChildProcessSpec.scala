@@ -2,6 +2,7 @@ package scommons.nodejs
 
 import org.scalatest.Succeeded
 import scommons.nodejs.ChildProcess._
+import scommons.nodejs.stream.Readable
 import scommons.nodejs.test.AsyncTestSpec
 import scommons.nodejs.util.StreamReader
 
@@ -133,6 +134,7 @@ class ChildProcessSpec extends AsyncTestSpec {
     val onceMock = mockFunction[String, js.Function, raw.EventEmitter]
     val rawProcess = literal(
       "stdout" -> stdoutStream,
+      "stderr" -> Readable.from(Buffer.from("")),
       "once" -> onceMock
     ).asInstanceOf[raw.ChildProcess]
 
@@ -201,6 +203,7 @@ class ChildProcessSpec extends AsyncTestSpec {
     val onceMock = mockFunction[String, js.Function, raw.EventEmitter]
     val rawProcess = literal(
       "stdout" -> stdoutStream,
+      "stderr" -> Readable.from(Buffer.from("")),
       "once" -> onceMock
     ).asInstanceOf[raw.ChildProcess]
 

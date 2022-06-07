@@ -17,6 +17,7 @@ class SubProcessSpec extends AsyncTestSpec {
     val onceMock = mockFunction[String, js.Function, raw.EventEmitter]
     val childProcess = literal(
       "stdout" -> stdoutStream,
+      "stderr" -> Readable.from(Buffer.from("")),
       "once" -> onceMock
     ).asInstanceOf[raw.ChildProcess]
 
@@ -49,6 +50,7 @@ class SubProcessSpec extends AsyncTestSpec {
     val onceMock = mockFunction[String, js.Function, raw.EventEmitter]
     val childProcess = literal(
       "stdout" -> stdoutStream,
+      "stderr" -> Readable.from(Buffer.from("")),
       "once" -> onceMock
     ).asInstanceOf[raw.ChildProcess]
 
@@ -166,7 +168,8 @@ class SubProcessSpec extends AsyncTestSpec {
     //given
     val expectedOutput = "test content"
     val stdoutStream = Readable.from(Buffer.from(expectedOutput))
-    val stderrStream = Readable.from(Buffer.from("test error"))
+    val stderrStream = Readable.from(Buffer.from(""))
+    stderrStream.destroy(js.Error("test stream error"))
     val onceMock = mockFunction[String, js.Function, raw.EventEmitter]
     val childProcess = literal(
       "spawnargs" -> js.Array("app", "arg1", "arg2"),
@@ -189,7 +192,6 @@ class SubProcessSpec extends AsyncTestSpec {
     (for {
       result <- resultF
       output <- loop(result.stdout, "")
-      _ = stderrStream.destroy(js.Error("test stream error"))
       _ = exitCallback(1)
       exitError <- result.exitF.failed
     } yield {
