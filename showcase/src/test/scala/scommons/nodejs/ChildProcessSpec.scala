@@ -34,14 +34,12 @@ class ChildProcessSpec extends AsyncTestSpec {
     val (_, resultF) = child_process.exec("123", Some(defaultOpts))
 
     //then
-    resultF.failed.map { ex =>
-      val js.JavaScriptException(err: js.Error) = ex
-
+    resultF.failed.map(inside(_) { case js.JavaScriptException(err: js.Error) =>
       val resultError = err.asInstanceOf[js.Dynamic]
       resultError.code.asInstanceOf[Int] should be > 0
       resultError.stdout.toString shouldBe ""
       resultError.stderr.toString should not be empty
-    }
+    })
   }
   
   it should "call native exec and return failed future" in {
@@ -72,8 +70,7 @@ class ChildProcessSpec extends AsyncTestSpec {
     //then
     child should be theSameInstanceAs expectedResult
 
-    resultF.failed.map { ex =>
-      val js.JavaScriptException(err: js.Error) = ex
+    resultF.failed.map(inside(_) { case js.JavaScriptException(err: js.Error) =>
       err should be theSameInstanceAs expectedError
 
       val resultError = err.asInstanceOf[js.Dynamic]
@@ -83,7 +80,7 @@ class ChildProcessSpec extends AsyncTestSpec {
       //cleanup
       native.exec = nativeExec
       Succeeded
-    }
+    })
   }
   
   it should "call native exec and return successful future" in {
