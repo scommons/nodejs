@@ -21,10 +21,10 @@ class FSSpec extends AsyncTestSpec {
     val result = fs.readdir(dir)
     
     //then
-    result.failed.map {
+    result.failed.map(inside(_) {
       case JavaScriptException(error) =>
         error.toString should include ("no such file or directory")
-    }
+    })
   }
   
   it should "return list of files when readdir" in {
@@ -51,10 +51,10 @@ class FSSpec extends AsyncTestSpec {
     val result = fs.rename(oldPath, newPath)
 
     //then
-    result.failed.map {
+    result.failed.map(inside(_) {
       case JavaScriptException(error) =>
         error.toString should include ("EISDIR: illegal operation on a directory")
-    }.andThen {
+    }).andThen {
       case _ =>
         //cleanup
         fs.unlinkSync(file)
@@ -103,10 +103,10 @@ class FSSpec extends AsyncTestSpec {
     val result = fs.ftruncate(fd, 5)
 
     //then
-    result.failed.map {
+    result.failed.map(inside(_) {
       case JavaScriptException(error) =>
         error.toString should include ("EBADF: bad file descriptor")
-    }
+    })
   }
 
   it should "truncate file when ftruncate" in {
@@ -142,7 +142,7 @@ class FSSpec extends AsyncTestSpec {
     val stats = fs.lstatSync(os.homedir())
     
     //then
-    stats.isDirectory shouldBe true
+    stats.isDirectory() shouldBe true
     stats.isFile() shouldBe false
     stats.isSymbolicLink() shouldBe false
 

@@ -6,7 +6,7 @@ lazy val `scommons-nodejs` = (project in file("."))
   .settings(CommonModule.settings: _*)
   .settings(NodejsModule.settings: _*)
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     publish := ((): Unit),
     publishLocal := ((): Unit),
     publishM2 := ((): Unit)
