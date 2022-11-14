@@ -16,7 +16,9 @@ object NodejsCore extends ScalaJsModule {
       description := "Scala.js facades for Node.js platform",
       coverageExcludedPackages :=
         "scommons.nodejs.raw" +
-          ";scommons.nodejs.Buffer"
+          ";scommons.nodejs.Buffer" +
+          ";scommons.nodejs.util.StreamReader" + // avoid "Found a dangling UndefinedParam" during test with coverage
+          ";scommons.nodejs.util.SubProcess" // avoid "Found a dangling UndefinedParam" during test with coverage
     )
 
   override val internalDependencies: Seq[ClasspathDep[ProjectReference]] = Nil

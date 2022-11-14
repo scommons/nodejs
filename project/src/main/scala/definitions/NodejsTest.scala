@@ -1,6 +1,6 @@
 package definitions
 
-import common.TestLibs
+import common.{Libs, TestLibs}
 import sbt.Keys._
 import sbt._
 import scoverage.ScoverageKeys.coverageExcludedPackages
@@ -23,7 +23,8 @@ object NodejsTest extends ScalaJsModule {
 
   override val runtimeDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Seq(
     TestLibs.scalaTestJs.value,
-    TestLibs.scalaMockJs.value
+    TestLibs.scalaMockJs.value,
+    Libs.scalaJsJavaSecureRandom.value
   ))
 
   override val testDependencies: Def.Initialize[Seq[ModuleID]] = Def.setting(Nil)
