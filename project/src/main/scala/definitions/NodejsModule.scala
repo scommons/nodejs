@@ -1,5 +1,6 @@
 package definitions
 
+import org.scoverage.coveralls.Imports.CoverallsKeys._
 import sbt.Keys._
 import sbt._
 import scommons.sbtplugin.project.CommonModule
@@ -19,6 +20,8 @@ object NodejsModule {
 
   val settings: Seq[Setting[_]] = Seq(
     organization := "org.scommons.nodejs",
+
+    coverallsService := GitHubActionsCI.jobId.map(_ => GitHubActionsCI),
     
     //
     // publish/release related settings:
