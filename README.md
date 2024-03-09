@@ -51,4 +51,4 @@ Useful Scala APIs and utils:
 
 ## Documentation
 
-You can find more documentation [here](https://scommons.org/)
+You can find more documentation [here](https://scommons.github.io/)
